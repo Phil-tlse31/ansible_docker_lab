@@ -1,0 +1,28 @@
+---
+- name: Reference collections contents using their FQCNs
+  hosts: all
+  become: yes  
+  tasks:
+
+    - name: Create a directory if it does not exist
+      ansible.builtin.file:
+        path: /app_data
+        state: directory
+
+    - name: Ensure group "app_group" exists
+      ansible.builtin.group:
+        name: app_group
+        state: present
+
+    - name: Add the user 'app_usr' with a specific primary group of 'admin'
+      ansible.builtin.user:
+        name: app_user
+        comment: User App
+        group: app_group
+
+    - name: Change file ownership, group and permissions
+      ansible.builtin.file:
+        path: /app_data
+        owner: app_user
+        group: app_group
+        mode: '0744'
